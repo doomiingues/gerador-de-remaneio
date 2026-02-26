@@ -1,0 +1,1 @@
+#gerador de pdf para gerenciamento de caixas; qtds, frações, itens em caixas diversas
