@@ -1,11 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Painel de Itens</title>
 </head>
 <body>
-    
+
+<h1>Painel de Itens</h1>
+
+<h3>Buscar por Nome</h3>
+<input type="text" id="buscaNome" placeholder="Digite parte do nome">
+<button onclick="buscarPorNome()">Buscar</button>
+
+<h3>Buscar por Código</h3>
+<input type="text" id="buscaCodigo" placeholder="Digite o código">
+<button onclick="buscarPorCodigo()">Buscar</button>
+
+<hr>
+
+<ul id="resultado"></ul>
+
+<script>
+async function buscarPorNome() {
+    const termo = document.getElementById("buscaNome").value;
+    const res = await fetch(`/api/itens?nome=${termo}`);
+    const dados = await res.json();
+    renderizar(dados);
+}
+
+async function buscarPorCodigo() {
+    const codigo = document.getElementById("buscaCodigo").value;
+    const res = await fetch(`/api/itens?codigo=${codigo}`);
+
+    if (!res.ok) {
+        renderizar([]);
+        return;
+    }
+
+    const texto = await res.text();
+
+    try {
+        const dado = JSON.parse(texto);
+        renderizar([dado]);
+    } catch (erro) {
+        console.error("Resposta não é JSON:", texto);
+        renderizar([]);
+    }
+}
+
+function renderizar(listaItens) {
+    const lista = document.getElementById("resultado");
+    lista.innerHTML = "";
+
+    if (listaItens.length === 0) {
+        lista.innerHTML = "<li>Nenhum item encontrado</li>";
+        return;
+    }
+
+    listaItens.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = item.codigo + " - " + item.item;
+        lista.appendChild(li);
+    });
+}
+</script>
+
 </body>
 </html>
